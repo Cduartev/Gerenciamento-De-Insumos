@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface MateriaPrimaRepository extends JpaRepository<MateriaPrima, Long> {
 
-    boolean existsbyCodidgo(String codigo);
+    boolean existsByCodigo(String codigo);
 
     boolean existsAllByCodigoAndIdNot(String codigo, long id);
 
