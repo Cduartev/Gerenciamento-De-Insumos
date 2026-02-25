@@ -1,19 +1,20 @@
 # Gerenciamento de Insumos — API REST
 
-API REST para gerenciamento de insumos industriais com otimização de plano de produção. Desenvolvida com **Spring Boot 3.5**, a aplicação permite cadastrar matérias-primas e produtos, definir composições (BOM) e gerar automaticamente o plano de produção que **maximiza o valor total de venda** respeitando o estoque disponível.
+> **Desafio Técnico Full Stack — Projedata**
 
-## Tecnologias
+API REST desenvolvida como solução para o teste prático de P&D da Projedata. A aplicação permite o cadastro de matérias-primas e produtos, a definição de composições (BOM — Bill of Materials) e a geração automática de um **plano de produção otimizado** que maximiza o valor total de venda respeitando o estoque disponível.
+
+## Tecnologias Utilizadas
 
 | Camada | Tecnologia |
 |---|---|
 | Linguagem | Java 21 |
-| Framework | Spring Boot 3.5.11 |
+| Framework | Spring Boot 3.5 |
 | Persistência | Spring Data JPA / Hibernate |
-| Banco de Dados | PostgreSQL 17 |
+| Banco de Dados | PostgreSQL |
 | Validação | Bean Validation (Jakarta) |
 | Testes | JUnit 5 + Mockito + AssertJ |
 | Build | Maven Wrapper |
-| Infra | Docker Compose |
 
 ## Pré-requisitos
 
@@ -22,19 +23,24 @@ API REST para gerenciamento de insumos industriais com otimização de plano de 
 
 ## Como Executar
 
-### 1. Configurar o banco de dados local
+### 1. Configurar o banco de dados
 
-1. Certifique-se de que o **PostgreSQL** está instalado e ativo.
-2. Crie uma base de dados chamada `gerenciamento_de_insumos`.
-3. A aplicação está configurada para conectar com:
+1. Certifique-se de que o **PostgreSQL** está instalado e em execução.
+2. Crie a base de dados:
+   ```sql
+   CREATE DATABASE gerenciamento_de_insumos;
+   ```
+3. A aplicação está configurada para conectar com as seguintes credenciais padrão:
    - **URL**: `jdbc:postgresql://localhost:5432/gerenciamento_de_insumos`
    - **Usuário**: `postgres`
    - **Senha**: `admin123`
-4. Se precisar alterar essas credenciais, edite o arquivo `src/main/resources/application.yaml`.
+4. Caso suas credenciais sejam diferentes, edite o arquivo `src/main/resources/application.yaml`.
 
-### 2. Criar a base de dados e popular com dados iniciais (opcional)
+### 2. Popular com dados iniciais (opcional)
 
-Conecte-se ao seu PostgreSQL de preferência (pgAdmin, psql, DBeaver) e execute o script de seed:
+Um script SQL de carga inicial está disponível em `src/main/resources/db/seed.sql`. Ele insere 7 matérias-primas e 3 produtos com suas respectivas composições.
+
+Execute via `psql`, pgAdmin, DBeaver ou outra ferramenta de sua preferência:
 
 ```bash
 psql -h localhost -U postgres -d gerenciamento_de_insumos -f src/main/resources/db/seed.sql
@@ -48,7 +54,7 @@ psql -h localhost -U postgres -d gerenciamento_de_insumos -f src/main/resources/
 
 A API estará disponível em `http://localhost:8080`.
 
-### 4. Executar os testes
+### 4. Executar os testes unitários
 
 ```bash
 ./mvnw test
@@ -116,7 +122,6 @@ POST /api/produtos
 ```json
 POST /api/planos-producao/sugerir
 
-// Resposta
 {
   "valorTotalVenda": 225.00,
   "quantidadeTotalProduzida": 5,
@@ -152,9 +157,9 @@ src/main/java/com/projeto/gerenciamento/de/insumos/
     └── otimizacao/      # Algoritmo de otimização do plano de produção
 ```
 
-## Testes
+## Testes Unitários
 
-O projeto possui **27 testes unitários** utilizando JUnit 5 + Mockito:
+O projeto possui **27 testes unitários** cobrindo a lógica de negócio dos services, utilizando JUnit 5 + Mockito:
 
 | Classe | Testes | Cobertura |
 |---|---|---|
