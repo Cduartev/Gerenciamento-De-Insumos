@@ -18,25 +18,27 @@ API REST para gerenciamento de insumos industriais com otimização de plano de 
 ## Pré-requisitos
 
 - **Java 21** (JDK)
-- **Docker** e **Docker Compose** (para o banco de dados)
+- **PostgreSQL** instalado e rodando localmente
 
 ## Como Executar
 
-### 1. Subir o banco de dados
+### 1. Configurar o banco de dados local
 
-```bash
-docker-compose up -d
-```
+1. Certifique-se de que o **PostgreSQL** está instalado e ativo.
+2. Crie uma base de dados chamada `gerenciamento_de_insumos`.
+3. A aplicação está configurada para conectar com:
+   - **URL**: `jdbc:postgresql://localhost:5432/gerenciamento_de_insumos`
+   - **Usuário**: `postgres`
+   - **Senha**: `admin123`
+4. Se precisar alterar essas credenciais, edite o arquivo `src/main/resources/application.yaml`.
 
 ### 2. Criar a base de dados e popular com dados iniciais (opcional)
 
-Conecte-se ao PostgreSQL e execute o script de seed:
+Conecte-se ao seu PostgreSQL de preferência (pgAdmin, psql, DBeaver) e execute o script de seed:
 
 ```bash
 psql -h localhost -U postgres -d gerenciamento_de_insumos -f src/main/resources/db/seed.sql
 ```
-
-> A senha padrão é `admin123`.
 
 ### 3. Iniciar a aplicação
 
