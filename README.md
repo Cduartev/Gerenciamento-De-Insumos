@@ -1,8 +1,18 @@
-# Gerenciamento de Insumos — API REST
+# Gerenciamento de Insumos & Otimização de Produção — API REST
 
-> **Desafio Técnico Full Stack — Projedata**
+> **Desafio Técnico Full Stack — P&D**
 
-API REST desenvolvida como solução para o teste prático de P&D da Projedata. A aplicação permite o cadastro de matérias-primas e produtos, a definição de composições (BOM — Bill of Materials) e a geração automática de um **plano de produção otimizado** que maximiza o valor total de venda respeitando o estoque disponível.
+API REST desenvolvida em Java (Spring Boot) como solução para o desafio de P&D (Projedata).
+
+##  O Desafio e Requisitos Atendidos
+
+**Cenário:** Uma fábrica precisa controlar o estoque e decidir o que fabricar para obter o **maior lucro possível** com os insumos disponíveis.
+
+-  **Entidades Mapeadas:** `RawMaterial` (Código, Nome, Quantidade) e `Product` (Código, Nome, Valor, +Lista de Composição).
+-  **Otimização de Produção:** Rota dedicada que executa algoritmo de *Backtracking* para sugerir o cenário de **Maior Valor Total de Venda**, priorizando produtos com maior retorno financeiro e resolvendo os conflitos de disputa pelas mesmas matérias-primas.
+-  **Stack Obrigatória:** Construído em Java (Spring Boot) lidando com banco de dados relacional (PostgreSQL).
+-  **Clean Code e Padrões:** Arquitetura limpa (DDD), 100% programada em Inglês, sem lixos de código e tipagem forte usando `Records`.
+-  **Testes Unitários Obrigatórios e Diferenciais**: Cobertura expressiva da lógica do cálculo ótimo e de todas as regras de negócio dos CRUDs usando JUnit 5 e Mockito.
 
 ## Tecnologias Utilizadas
 
