@@ -24,14 +24,14 @@ API REST desenvolvida como solução para o teste prático de P&D da Projedata. 
 ## Como Executar
 
 ### 1. Configurar o banco de dados
-
+![Banco De Dados](https://github.com/user-attachments/assets/b75446d3-96d2-4c37-9556-3958521685a9)
 1. Certifique-se de que o **PostgreSQL** está instalado e em execução.
 2. Crie a base de dados:
    ```sql
-   CREATE DATABASE gerenciamento_de_insumos;
+   CREATE DATABASE inventory_management;
    ```
 3. A aplicação está configurada para conectar com as seguintes credenciais padrão:
-   - **URL**: `jdbc:postgresql://localhost:5432/gerenciamento_de_insumos`
+   - **URL**: `jdbc:postgresql://localhost:5432/inventory_management`
    - **Usuário**: `postgres`
    - **Senha**: `admin123`
 4. Caso suas credenciais sejam diferentes, edite o arquivo `src/main/resources/application.yaml`.
@@ -43,13 +43,13 @@ Um script SQL de carga inicial está disponível em `src/main/resources/db/seed.
 Execute via `psql`, pgAdmin, DBeaver ou outra ferramenta de sua preferência:
 
 ```bash
-psql -h localhost -U postgres -d gerenciamento_de_insumos -f src/main/resources/db/seed.sql
+psql -h localhost -U postgres -d inventory_management -f src/main/resources/db/seed.sql
 ```
 
 ### 3. Iniciar a aplicação
 
 ```bash
-./mvnw spring-boot:run
+./mvnw clean spring-boot:run
 ```
 
 A API estará disponível em `http://localhost:8080`.
@@ -57,112 +57,115 @@ A API estará disponível em `http://localhost:8080`.
 ### 4. Executar os testes unitários
 
 ```bash
-./mvnw test
+./mvnw clean test
 ```
 
 ## Endpoints da API
-![Banco De Dados](https://github.com/user-attachments/assets/b75446d3-96d2-4c37-9556-3958521685a9)
-### Matérias-Primas — `/api/materias-primas`
+
+
+### Matérias-Primas — `/api/raw-materials`
 
 | Método | Rota | Descrição |
 |---|---|---|
-| `GET` | `/api/materias-primas` | Listar todas as matérias-primas |
-| `GET` | `/api/materias-primas/{id}` | Buscar matéria-prima por ID |
-| `POST` | `/api/materias-primas` | Cadastrar nova matéria-prima |
-| `PUT` | `/api/materias-primas/{id}` | Atualizar matéria-prima existente |
-| `DELETE` | `/api/materias-primas/{id}` | Remover matéria-prima |
+| `GET` | `/api/raw-materials` | Listar todas as matérias-primas |
+| `GET` | `/api/raw-materials/{id}` | Buscar matéria-prima por ID |
+| `POST` | `/api/raw-materials` | Cadastrar nova matéria-prima |
+| `PUT` | `/api/raw-materials/{id}` | Atualizar matéria-prima existente |
+| `DELETE` | `/api/raw-materials/{id}` | Remover matéria-prima |
 
-### Produtos — `/api/produtos`
-
-| Método | Rota | Descrição |
-|---|---|---|
-| `GET` | `/api/produtos` | Listar todos os produtos |
-| `GET` | `/api/produtos/{id}` | Buscar produto por ID |
-| `POST` | `/api/produtos` | Cadastrar novo produto com composição |
-| `PUT` | `/api/produtos/{id}` | Atualizar produto existente |
-| `DELETE` | `/api/produtos/{id}` | Remover produto |
-
-### Plano de Produção — `/api/planos-producao`
+### Produtos — `/api/products`
 
 | Método | Rota | Descrição |
 |---|---|---|
-| `POST` | `/api/planos-producao/sugerir` | Gerar sugestão de plano ótimo de produção |
+| `GET` | `/api/products` | Listar todos os produtos |
+| `GET` | `/api/products/{id}` | Buscar produto por ID |
+| `POST` | `/api/products` | Cadastrar novo produto com composição |
+| `PUT` | `/api/products/{id}` | Atualizar produto existente |
+| `DELETE` | `/api/products/{id}` | Remover produto |
+
+### Plano de Produção — `/api/production-plans`
+
+| Método | Rota | Descrição |
+|---|---|---|
+| `POST` | `/api/production-plans/suggest` | Gerar sugestão de plano ótimo de produção |
 
 ## Exemplos de Requisição
 
-### Criar Matéria-Prima
+### Criar Matéria-Prima (Raw Material)
 
 ```json
-POST /api/materias-primas
+POST /api/raw-materials
 {
-  "codigo": "MP-001",
-  "nome": "Farinha de Trigo",
-  "quantidadeEstoque": 50.0000,
-  "unidadeMedida": "QUILOGRAMA"
+  "code": "RM-001",
+  "name": "Farinha de Trigo",
+  "stockQuantity": 50.0000,
+  "unitOfMeasurement": "KILOGRAM"
 }
 ```
 
-### Criar Produto
+### Criar Produto (Product)
 
 ```json
-POST /api/produtos
+POST /api/products
 {
-  "codigo": "PROD-001",
-  "nome": "Bolo de Chocolate",
-  "valor": 45.00,
-  "itensComposicao": [
-    { "materiaPrimaId": 1, "quantidadeNecessaria": 2.0000 },
-    { "materiaPrimaId": 2, "quantidadeNecessaria": 0.5000 }
+  "code": "PROD-001",
+  "name": "Bolo de Chocolate",
+  "price": 45.00,
+  "compositionItems": [
+    { "rawMaterialId": 1, "requiredQuantity": 2.0000 },
+    { "rawMaterialId": 2, "requiredQuantity": 0.5000 }
   ]
 }
 ```
 
-### Sugerir Plano de Produção
+### Sugerir Plano de Produção (Production Plan)
 
 ```json
-POST /api/planos-producao/sugerir
+POST /api/production-plans/suggest
 
 {
-  "valorTotalVenda": 225.00,
-  "quantidadeTotalProduzida": 5,
-  "itensSugeridos": [ ... ],
-  "consumosMateriasPrimas": [ ... ],
-  "saldosMateriasPrimas": [ ... ]
+  "totalSalesValue": 225.00,
+  "totalProducedQuantity": 5,
+  "suggestedItems": [ ... ],
+  "rawMaterialConsumptions": [ ... ],
+  "rawMaterialBalances": [ ... ]
 }
 ```
 
 ## Algoritmo de Otimização
 
-O serviço `PlanoProducaoService` implementa um algoritmo de **busca exaustiva (backtracking)** que:
+O serviço `ProductionPlanService` implementa um algoritmo de **busca exaustiva (backtracking)** que:
 
-1. **Filtra** apenas produtos com composição válida
-2. **Ordena** produtos por valor decrescente (prioridade aos mais lucrativos)
-3. **Explora** todas as combinações possíveis de quantidades respeitando o estoque
-4. **Seleciona** a combinação que maximiza o valor total de venda
-5. **Desempata** preferindo a combinação com maior quantidade total produzida
+1. **Filtra** apenas produtos com composição válida (`ProductCompositionItem`).
+2. **Ordena** produtos por valor decrescente (prioridade aos mais lucrativos).
+3. **Explora** todas as combinações possíveis de quantidades respeitando o estoque da `RawMaterial`.
+4. **Seleciona** a combinação que maximiza o valor total (`totalSalesValue`).
+5. **Desempata** preferindo a combinação com maior quantidade total produzida.
 
 ## Estrutura do Projeto
 
-```
-src/main/java/com/projeto/gerenciamento/de/insumos/
-├── controller/          # Endpoints REST
+O código-fonte segue o padrão **DDD (Domain-Driven Design) simplificado** e nomenclatura 100% em **Inglês**:
+
+```text
+src/main/java/com/project/inventory/
+├── controller/          # Endpoints REST (Controllers)
 ├── domain/
-│   ├── entity/          # Entidades JPA (Produto, MateriaPrima, ItemComposicaoProduto)
-│   ├── enumtype/        # Enums (UnidadeMedida)
-│   └── repository/      # Repositórios Spring Data
-├── dto/                 # DTOs de request e response
-├── exception/           # Exceções e tratamento global
-├── mapper/              # Mapeamento entidade ↔ DTO
-└── service/
-    └── otimizacao/      # Algoritmo de otimização do plano de produção
+│   ├── entity/          # Entidades JPA (Product, RawMaterial, ProductCompositionItem)
+│   ├── enumtype/        # Enums (UnitOfMeasurement)
+│   └── repository/      # Spring Data Repositories
+├── dto/                 # Request e Response (Records Pattern)
+├── exception/           # GlobalExceptionHandler (@RestControllerAdvice)
+├── mapper/              # Classes de Mapamento entre DTOs e Entities
+└── service/             # Lógicas de negócio (ProductService, RawMaterialService)
+    └── optimization/    # ProductionPlanService (Algoritmo Backtracking)
 ```
 
 ## Testes Unitários
 
-O projeto possui **27 testes unitários** cobrindo a lógica de negócio dos services, utilizando JUnit 5 + Mockito:
+O projeto possui **28 testes unitários** cobrindo a lógica de negócio dos services, utilizando JUnit 5 + Mockito com sintaxe BDD:
 
 | Classe | Testes | Cobertura |
 |---|---|---|
-| `PlanoProducaoServiceTest` | 8 | Algoritmo de otimização, gargalo, desempate, consumos e saldos |
-| `MateriaPrimaServiceTest` | 9 | CRUD completo e validações de código duplicado |
-| `ProdutoServiceTest` | 10 | CRUD completo, composição com MP repetida e inexistente |
+| `ProductionPlanServiceTest` | 8 | Algoritmo de otimização, gargalo de estoque, desempate de matrizes, consumos e saldos |
+| `RawMaterialServiceTest` | 10 | CRUD completo, exceptions e validações de violação de Unique Entity |
+| `ProductServiceTest` | 10 | CRUD completo, integridade da composição com MP repetida/inexistente e orphans |
