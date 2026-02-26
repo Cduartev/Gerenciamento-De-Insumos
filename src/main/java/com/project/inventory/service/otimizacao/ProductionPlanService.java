@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 public class ProductionPlanService {
 
     private static final BigDecimal ZERO = BigDecimal.ZERO;
+    private static final int MAX_ITERATIONS = 50000; // Limite de segurança para evitar loops infinitos
 
     private final ProductRepository productRepository;
     private final RawMaterialRepository rawMaterialRepository;
@@ -113,14 +114,25 @@ public class ProductionPlanService {
             BigDecimal priceTotalAtual,
             int totalQuantityAtual
     ) {
-        if (productIndex == products.size()) {
+        state.iterations++;
+        
+        // Caso base: chegamos ao fim da lista de produtos ou atingimos o limite de segurança
+        if (productIndex == products.size() || state.iterations >= MAX_ITERATIONS) {
             evaluateBestSolution(state, priceTotalAtual, totalQuantityAtual);
+            return;
+        }
+
+        // PODA: Se o valor máximo possível deste galho não puder superar o melhor valor já encontrado, pulamos.
+        // Como a lista está ordenada por preço decrescente, o "upper bound" é agressivo.
+        BigDecimal potentialRemainingValue = calculateUpperBound(productIndex, products, availableStock);
+        if (priceTotalAtual.add(potentialRemainingValue).compareTo(state.bestTotalValue) < 0) {
             return;
         }
 
         Product productAtual = products.get(productIndex);
         int maximoUnits = calculateMaxProducibleUnits(productAtual, availableStock);
 
+        // Tentamos do máximo para o mínimo para encontrar soluções boas mais rápido (ajuda na poda)
         for (int quantity = maximoUnits; quantity >= 0; quantity--) {
             state.currentQuantities[productIndex] = quantity;
 
@@ -145,6 +157,9 @@ public class ProductionPlanService {
             if (quantity > 0) {
                 returnRawMaterials(productAtual, quantity, availableStock);
             }
+            
+            // Se atingimos o limite durante a recursão, paramos de tentar outras quantidades para este nível
+            if (state.iterations >= MAX_ITERATIONS) break;
         }
 
         state.currentQuantities[productIndex] = 0;
@@ -206,6 +221,16 @@ public class ProductionPlanService {
             BigDecimal atual = availableStock.getOrDefault(rawMaterialId, ZERO);
             availableStock.put(rawMaterialId, atual.add(devolucao));
         }
+    }
+
+    private BigDecimal calculateUpperBound(int productIndex, List<Product> products, Map<Long, BigDecimal> availableStock) {
+        BigDecimal totalPotential = ZERO;
+        for (int i = productIndex; i < products.size(); i++) {
+            Product p = products.get(i);
+            int maxPossible = calculateMaxProducibleUnits(p, availableStock);
+            totalPotential = totalPotential.add(p.getPrice().multiply(BigDecimal.valueOf(maxPossible)));
+        }
+        return totalPotential;
     }
 
     private void evaluateBestSolution(
@@ -326,12 +351,14 @@ public class ProductionPlanService {
         private int[] bestQuantities;
         private BigDecimal bestTotalValue;
         private int bestTotalQuantity;
+        private int iterations;
 
         private SearchState(int quantityProducts) {
             this.currentQuantities = new int[quantityProducts];
             this.bestQuantities = new int[quantityProducts];
             this.bestTotalValue = ZERO;
             this.bestTotalQuantity = 0;
+            this.iterations = 0;
         }
     }
 }
