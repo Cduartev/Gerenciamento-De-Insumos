@@ -51,7 +51,7 @@ Usei o Miro para gerar o meu modelo visual!!
 
 ### 2. Popular com dados iniciais (opcional)
 
-Um script SQL de carga inicial está disponível em `src/main/resources/db/seed.sql`. Ele insere 7 matérias-primas e 3 produtos com suas respectivas composições.
+Um script SQL de carga inicial está disponível em `src/main/resources/db/seed.sql`.  Ele insere 1 usuario 7 matérias-primas e 3 produtos com suas respectivas composições.
 
 Execute via `psql`, pgAdmin, DBeaver ou outra ferramenta de sua preferência:
 
