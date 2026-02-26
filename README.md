@@ -12,8 +12,9 @@ API REST desenvolvida em Java (Spring Boot) como solução para o desafio de P&D
 -  **Otimização de Produção:** Rota dedicada que executa algoritmo de *Backtracking* para sugerir o cenário de **Maior Valor Total de Venda**, priorizando produtos com maior retorno financeiro e resolvendo os conflitos de disputa pelas mesmas matérias-primas.
 -  **Stack Obrigatória:** Construído em Java (Spring Boot) lidando com banco de dados relacional (PostgreSQL).
 -  **Clean Code e Padrões:** Arquitetura limpa (DDD), 100% programada em Inglês, sem lixos de código e tipagem forte usando `Records`.
--  **Segurança e Autenticação**: Proteção de rotas com **Spring Security** e emissão de tokens **JWT (JSON Web Token)**, possuindo um fluxo completo de Login e Registro.
--  **Testes Unitários Obrigatórios e Diferenciais**: Cobertura expressiva da lógica do cálculo ótimo e de todas as regras de negócio dos CRUDs usando JUnit 5 e Mockito.
+- **Segurança e Autenticação**: Proteção de rotas com **Spring Security** e emissão de tokens **JWT (JSON Web Token)**, possuindo um fluxo completo de Login e Registro.
+- **Integração Realista (Camada Visual):** Embora seja uma API de Back-end, testável de ponta a ponta com um cliente Front-end moderno tematizado (identidade corporativa visual da Vale) para simulação exata de métricas.
+- **Testes Unitários Obrigatórios e Diferenciais**: Cobertura expressiva da lógica do cálculo ótimo e de todas as regras de negócio dos CRUDs usando JUnit 5 e Mockito.
 
 ## Tecnologias Utilizadas
 
